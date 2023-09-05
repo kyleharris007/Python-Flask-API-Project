@@ -1,37 +1,45 @@
 from flask import Flask, request, jsonify
-from peewee import *
+# from peewee import *
 from playhouse.shortcuts import model_to_dict, dict_to_model
-from people import Person
 
+#connects to the database
 db = PostgresqlDatabase('people', user='buccolt45', password='12345',
                         host='localhost', port=5432)
 
+#creates a base model class that specifies which database to use
 class BaseModel(Model):
     class Meta:
         database = db
 
+#creates a person class that inherits from the base model
 class Person(BaseModel):
     name = CharField()
     phone = IntegerField()
 
+#connects to the database, drops the table if it exists, and creates a new table
 db.connect()
 db.drop_tables([Person])
 db.create_tables([Person])
 
+#creates a list of people
 for person in Person:
     Person (
         name = Person['name'],
         phone = Person['phone']
     ).save()
 
+#creates a flask app
 app = Flask(__name__)
 
+#creates a route for the root of the api
 @app.route('/')
 def index():
     return jsonify({'message': 'This is the API root'})
 
+#creates a route for the people endpoint
 @app.route('/person', methods=['GET', 'PUT'])
 
+#creates a function for the people endpoint
 @app.route('/person/<id>', methods=['GET', 'PUT', 'DELETE'])
 def person(id=None):
     if request.method == 'GET':
@@ -71,30 +79,5 @@ def person(id=None):
         except DoesNotExist:
             return jsonify({'error': 'Person not found'})
 
-    
-
-
-
-
-
-
-# def endpoint():
-#     if request.method == 'GET':
-#         return 'GET request'
-#     if request.method == 'PUT':
-#         return 'PUT request'
-#     if request.method == 'POST':
-#         return 'POST request'
-#     if request.method == 'DELETE':
-#         return 'DELETE request'
-    
-# @app.route('/get-json')
-# def get_json():
-#     return jsonify({
-#         "name": "Garfield",
-#         "hatesMondays": True,
-#         "friends": ["Sheldon", "wade", "Orson", "Squeak"]
-#     })
-
-
+#runs the app
 app.run(port=3030, debug=True)
