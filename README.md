@@ -1,5 +1,5 @@
 # Python Flask Project
-  For this mini project, I used Python, SQL, and Flask to build out a basic database that stores data for individuals. This can also double as an API thats data can be extracted and used.
+  For this mini project, I used Python, SQL, and Flask to build out a basic API database.
 
 # Software
   -Python
